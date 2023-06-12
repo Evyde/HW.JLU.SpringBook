@@ -170,7 +170,8 @@
                         </td>
 
                         <td th:if="${user.isAdmin() && !cart}" style="text-align:center;">
-                            <a class="text-white btn btn-danger btn-sm" style="width: 80px;" th:attr="data=${book.getId()}">删除</a>
+                            <a class="text-white btn btn-danger btn-sm" style="width: 80px;"
+                               onclick="deleteBook(this)" th:attr="data=${book.getId()}">删除</a>
                         </td>
 
                         <td th:if="${!user.isAdmin() && cart}" style="text-align:center;">
@@ -391,6 +392,86 @@ function checkout(e) {
         error: function(error) {
             // t.show()
             raiseToast(message, "bg-danger", "text-light");
+            console.log(error);
+        }
+    });
+}
+
+function deleteBook(e) {
+    var nowUrl = window.location.origin;
+    // 发送POST请求
+    $.ajax({
+        type: 'GET',
+        url: '/api/book/delete/' + e.getAttribute("data"),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(response) {
+            // 处理返回的JSON数据
+            var message = response.message;
+            var redirectUrl = response.redirect;
+            console.log(response);
+            // 显示message字段的内容
+            // alert(message);
+            // console.log(addingHtml.format(toastNum, "primary", message))
+            var bg_color;
+            if (response.status === "success") {
+                bg_color = "bg-primary";
+            } else {
+                bg_color = "bg-danger";
+            }
+            raiseToast(message, bg_color, "text-light");
+            setTimeout(function jump(url) {
+                // 跳转到redirect字段指定的URL
+                window.location.href = nowUrl + redirectUrl;
+            }, 2000)
+        },
+        error: function(error) {
+            // t.show()
+            raiseToast(message, "bg-danger", "text-light");
+            console.log(error);
+        }
+    });
+}
+
+function addNewBook(e) {
+    var formData = {
+        name: $('input[id=newBookName]').val(),
+        quantity: $('input[id=newBookQuantity]').val(),
+        price: $('input[id=newBookPrice]').val(),
+        // role: $('select[name=role]').val()
+    };
+
+    var nowUrl = window.location.origin;
+
+    // 发送POST请求
+    $.ajax({
+        type: 'POST',
+        url: '/api/book/add',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(response) {
+            // 处理返回的JSON数据
+            var message = response.message;
+            var redirectUrl = response.redirect;
+            console.log(response);
+            // 显示message字段的内容
+            // alert(message);
+            var bg_color;
+            if (response.status === "success") {
+                bg_color = "bg-primary";
+            } else {
+                bg_color = "bg-danger";
+            }
+            raiseToast(message, bg_color, "text-light");
+            // 跳转到redirect字段指定的URL
+            setTimeout(function () {
+                window.location.href = nowUrl + redirectUrl;
+            }, 3000)
+
+        },
+        error: function(error) {
+            raiseToast(error, "bg-danger", "text-light");
             console.log(error);
         }
     });

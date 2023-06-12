@@ -21,9 +21,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
-    private BookRepository bookRepository;
-    private UserRepository userRepository;
-    private CartItemRepository cartItemRepository;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
+    private final CartItemRepository cartItemRepository;
 
     public CartController(
             BookRepository bookRepository,
@@ -41,7 +41,7 @@ public class CartController {
         Optional<Book> tempBook = bookRepository.findById(id);
         String username = session.getAttribute("username").toString();
 
-        if (!tempBook.isEmpty()) {
+        if (tempBook.isPresent()) {
             CartItem tempCartItem = cartItemRepository.findByBookId(id);
             if (tempCartItem != null) {
                 cartItemRepository.save(new CartItem(username, id, tempCartItem.getQuantity() + 1));

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,8 @@ public class HomeView {
         List<CartItem> cartItems = cartItemRepository.findAllByUsername(username);
         HashMap<Book, Double> priceMap = new HashMap<>();
         HashMap<Book, CartItem> cartItemMap = new HashMap<>();
+        Integer quantities = 0;
+        Double prices = 0.0;
         for (CartItem c: cartItems) {
             Book b = bookRepository.getReferenceById(c.getBookId());
             priceMap.put(
@@ -72,7 +75,13 @@ public class HomeView {
                     b,
                     c
             );
+            quantities += c.getQuantity();
+            prices += c.getQuantity() * b.getPrice();
         }
+        DecimalFormat format = new DecimalFormat("#.00");
+        Book fakeBook = new Book(-1L, "总计", quantities, 0);
+        priceMap.put(fakeBook, Double.parseDouble(format.format(prices)));
+        cartItemMap.put(fakeBook, new CartItem(username, -1L, quantities));
         m.addObject("books", priceMap.keySet());
         m.addObject("priceMap", priceMap);
         m.addObject("cartItemMap", cartItemMap);

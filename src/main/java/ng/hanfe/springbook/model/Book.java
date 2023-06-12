@@ -22,6 +22,13 @@ public class Book {
         this.price = price;
     }
 
+    public Book(Long id, String name, Integer quantity, double price) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }

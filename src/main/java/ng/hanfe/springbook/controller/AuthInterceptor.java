@@ -16,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
     @Autowired
     private UserRepository repository;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession(false);
@@ -25,9 +26,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                 // 管理员角色可以访问所有页面，放行
                 String requestURI = request.getRequestURI();
                 if (
+                        (
                                 requestURI.equals("/search")
                                 || requestURI.startsWith("/api/")
                                 || requestURI.equals("/")
+                        )
+                                && !requestURI.startsWith("/api/cart/")
+                                && !requestURI.equals("/cart")
                 ) {
                     // 管理员有权限访问，放行
                     return true;
@@ -41,9 +46,9 @@ public class AuthInterceptor implements HandlerInterceptor {
                 String requestURI = request.getRequestURI();
                 if (
                         requestURI.startsWith("/api/cart/")
-                        || requestURI.equals("/search")
-                        || requestURI.equals("/cart")
-                        || requestURI.equals("/")
+                                || requestURI.equals("/search")
+                                || requestURI.equals("/cart")
+                                || requestURI.equals("/")
                 ) {
                     // 用户有权限访问，放行
                     return true;
