@@ -1,0 +1,12 @@
+###
+GET http://localhost:8080/login
+
+###
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{
+  "username": "a333",
+  "password": "555",
+  "role": "USER"
+}

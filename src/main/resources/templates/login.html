@@ -1,0 +1,62 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>登录</title>
+</head>
+
+<body>
+<div class="login-main">
+    <p class="sign">登录</p>
+    <form id="register-form" class="form1" action="#" method="post">
+        <input class="un" type="text" placeholder="用户名" name="username">
+        <input class="pass" type="password" placeholder="密码" name="password">
+        <button type="submit" class="submit" align="center" onclick="login()">登录</button>
+    </form>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    function login() {
+        // 阻止表单默认提交行为
+        event.preventDefault();
+
+        // 获取表单数据
+        var formData = {
+            username: $('input[name=username]').val(),
+            password: CryptoJS.MD5($('input[name=password]').val()).toString(),
+            // role: $('select[name=role]').val()
+        };
+
+        var nowUrl = window.location.origin;
+
+        // 发送POST请求
+        $.ajax({
+            type: 'POST',
+            url: '/api/login',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(response) {
+                // 处理返回的JSON数据
+                var message = response.message;
+                var redirectUrl = response.redirect;
+                console.log(response);
+                // 显示message字段的内容
+                alert(message);
+
+                // 跳转到redirect字段指定的URL
+                window.location.href = nowUrl + redirectUrl;
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+
+</html>
