@@ -44,7 +44,6 @@ public class LoginController {
         if (tempUser != null) {
             if (tempUser.getPassword().equals(param.password)) {
                 String redirectUrl;
-                logger.info(String.valueOf(tempUser.getRole()));
                 switch (tempUser.getRole()) {
                     case USER: {
                         redirectUrl = "/";
@@ -56,25 +55,26 @@ public class LoginController {
                     }
                     default: redirectUrl = "/login";
                 }
-                logger.info(redirectUrl);
-
                 session.setAttribute("username", tempUser.getUsername());
 
                 return Map.of(
                         "redirect", redirectUrl,
-                        "message", "Hello!"
+                        "message", tempUser.getUsername() + "，你好！",
+                        "status", "success"
                 );
             } else {
                 return Map.of(
                         "redirect", "/login",
-                        "message", "User password wrong!"
+                        "message", "User password wrong!",
+                        "status", "failed"
                 );
             }
 
         } else {
             return Map.of(
                     "redirect", "/login",
-                    "message", "User does not exists!"
+                    "message", "User does not exists!",
+                    "status", "failed"
             );
         }
     }

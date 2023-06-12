@@ -40,13 +40,15 @@ public class RegisterController {
                     param.role
             ));
             return Map.of(
-                    "message", "success",
-                    "redirect", "/login"
+                    "message", "成功！",
+                    "redirect", "/login",
+                    "status", "success"
             );
         }
         return Map.of(
-                "message", "error",
-                "redirect", "/register"
+                "message", "错误！",
+                "redirect", "/register",
+                "status", "failed"
         );
     }
 }

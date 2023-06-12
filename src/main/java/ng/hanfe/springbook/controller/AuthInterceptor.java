@@ -23,13 +23,26 @@ public class AuthInterceptor implements HandlerInterceptor {
             User user = repository.findByUsername((String) session.getAttribute("username"));
             if (user.getRole().equals(Role.ADMIN)) {
                 // 管理员角色可以访问所有页面，放行
-                return true;
+                String requestURI = request.getRequestURI();
+                if (
+                                requestURI.equals("/search")
+                                || requestURI.startsWith("/api/")
+                                || requestURI.equals("/")
+                ) {
+                    // 管理员有权限访问，放行
+                    return true;
+                } else {
+                    // 其他页面不允许访问，重定向到首页或其他提示页面
+                    // response.sendRedirect("/");
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
             } else if (user.getRole().equals(Role.USER)) {
                 // 普通用户角色只能访问特定页面，例如购物车页面
                 String requestURI = request.getRequestURI();
                 if (
-                        requestURI.equals("/cart")
-                        || requestURI.equals("/checkout")
+                        requestURI.startsWith("/api/cart/")
+                        || requestURI.equals("/search")
+                        || requestURI.equals("/cart")
                         || requestURI.equals("/")
                 ) {
                     // 用户有权限访问，放行
