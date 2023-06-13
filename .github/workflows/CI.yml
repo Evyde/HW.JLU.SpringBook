@@ -31,4 +31,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
+            docker-compose.yml
             target/*.jar
