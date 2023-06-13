@@ -25,32 +25,21 @@ jobs:
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
 
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: |
-            Automatic release created by GitHub Actions
           draft: false
           prerelease: false
 
-      - name: Upload JAR
-        id: upload_jar
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-jar
-          path: target/*.jar
-
-      - name: Attach JAR to Release
-        id: attach_jar
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.upload_jar.outputs.artifact_paths }}
-          asset_name: app.jar
+          asset_path: target/*.jar
+          asset_name: SpringBook.jar
           asset_content_type: application/java-archive
