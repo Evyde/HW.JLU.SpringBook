@@ -22,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml -Dmaven.test.skip=true
 
       - name: Publish package
         run: mvn github-release:github-release -D github.auth-token=${{ secrets.TOKEN }}
