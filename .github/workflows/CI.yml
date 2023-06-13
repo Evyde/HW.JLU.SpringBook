@@ -24,22 +24,12 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          tag_name: release
-          release_name: Release
-          draft: true
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
           prerelease: true
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/*.jar
-          asset_name: SpringBook.jar
-          asset_content_type: application/java-archive
+          title: "Development Build"
+          files: |
+            LICENSE.txt
+            target/*.jar
